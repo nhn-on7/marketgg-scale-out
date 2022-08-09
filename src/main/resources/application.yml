@@ -18,3 +18,11 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+
+
+cloud:
+  auth-url: https://api-identity.infrastructure.cloud.toast.com/v2.0
+  user-name: computerhermit96@gmail.com
+  password: 123!
+  tenant-id: 8a2dd42738a0427180466a56561b5eef
+  storage-url: https://api-storage.cloud.toast.com/v1/AUTH_8a2dd42738a0427180466a56561b5eef
