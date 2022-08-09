@@ -14,4 +14,9 @@ public class CloudStorageService implements StorageService {
         return null;
     }
 
+    // TODO 4: API 설명서를 보며 Token 요청을 구현하세요
+    public String requestToken() {
+        return null;
+    }
+
 }
