@@ -1,8 +1,10 @@
 package com.nhnacademy.marketggscaleout.service.impl;
 
+import com.nhnacademy.marketggscaleout.entity.Image;
 import com.nhnacademy.marketggscaleout.repository.ImageRepository;
 import com.nhnacademy.marketggscaleout.service.FileService;
 import com.nhnacademy.marketggscaleout.service.StorageService;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +23,11 @@ public class FileServiceImpl implements FileService {
     private final List<StorageService> storageServices;
     private final ImageRepository imageRepository;
 
-    public void uploadFile(final MultipartFile image) {
+    public void uploadFile(final MultipartFile image) throws IOException {
 
         if (option.equals("local")) {
-            storageServices.get(0).uploadImage(image);
+            Image imageEntity = storageServices.get(0).uploadImage(image);
+            imageRepository.save(imageEntity);
         }
 
         storageServices.get(1).uploadImage(image);
