@@ -1,13 +1,13 @@
 package com.nhnacademy.marketggscaleout.controller;
 
-import com.nhnacademy.marketggscaleout.service.StorageService;
+import com.nhnacademy.marketggscaleout.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class StorageController {
+public class FileController {
 
-    private final StorageService storageService;
+    private final FileService fileService;
 
 }
