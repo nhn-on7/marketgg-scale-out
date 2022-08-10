@@ -30,7 +30,8 @@ public class FileServiceImpl implements FileService {
             Image imageEntity = storageServices.get(0).uploadImage(image);
             imageRepository.save(imageEntity);
         } else {
-            storageServices.get(1).uploadImage(image);
+            Image imageEntity = storageServices.get(1).uploadImage(image);
+            imageRepository.save(imageEntity);
         }
     }
 
@@ -41,6 +42,8 @@ public class FileServiceImpl implements FileService {
 
         if (option.equals("local")) {
             storageServices.get(0).downloadImage(image);
+        } else {
+            storageServices.get(1).downloadImage(image);
         }
     }
 

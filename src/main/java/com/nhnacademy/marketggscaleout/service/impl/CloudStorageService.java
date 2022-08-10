@@ -9,10 +9,18 @@ import com.nhnacademy.marketggscaleout.dto.request.PasswordCredentials;
 import com.nhnacademy.marketggscaleout.dto.response.AccessResponse;
 import com.nhnacademy.marketggscaleout.entity.Image;
 import com.nhnacademy.marketggscaleout.service.StorageService;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -54,6 +63,7 @@ public class CloudStorageService implements StorageService {
 
     private static final String HEADER_NAME = "X-Auth-Token";
     private static final String DIR = System.getProperty("java.io.tmpdir");
+    private static final String LOCAL_DIR = System.getProperty("user.home");
 
     // TODO 4: API 설명서를 보며 Token 요청을 구현하세요
     public String requestToken() {
@@ -117,11 +127,42 @@ public class CloudStorageService implements StorageService {
 
     @Override
     public void downloadImage(Image image) throws IOException {
+        String url = image.getImageAddress();
+
+        accessResponse = objectMapper.readValue(requestToken(), AccessResponse.class);
+        String tokenId = accessResponse.getAccess().getToken().getId();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HEADER_NAME, tokenId);
+        headers.setAccept(List.of(MediaType.APPLICATION_OCTET_STREAM));
+
+        HttpEntity<String> requestHttpEntity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<byte[]> response
+            = this.restTemplate.exchange(url, HttpMethod.GET, requestHttpEntity, byte[].class);
+
+        String dir = String.valueOf(returnDir());
+        File file = new File(dir, image.getName());
+        try
+            (
+            InputStream is = new ByteArrayInputStream(Objects.requireNonNull(response.getBody()));
+            OutputStream os = new FileOutputStream(file);
+            ) {
+            IOUtils.copy(is, os);
+        } catch (IOException e) {
+            log.error("{}", e.getMessage());
+        }
 
     }
 
     private String getUrl(String objectName) {
         return this.storageUrl + "/on7_storage/" + objectName;
+    }
+
+    private Path returnDir() {
+        String format = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        return Paths.get(LOCAL_DIR, format);
     }
 
 }
