@@ -10,13 +10,14 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 public class LocalStorageService implements StorageService {
 
-    private static final String DIR = System.getProperty("user.name");
+    private static final String DIR = System.getProperty("user.home");
 
     @Override
     public Image uploadImage(final MultipartFile image) throws IOException {
@@ -25,9 +26,9 @@ public class LocalStorageService implements StorageService {
         }
 
         String dir = String.valueOf(Files.createDirectories(returnDir()));
-        String filename = image.getOriginalFilename();
+        String filename =UUID.randomUUID() + ".png";
 
-        File dest = new File(dir, Objects.requireNonNull(filename));
+        File dest = new File(dir, filename);
         image.transferTo(dest);
 
         return Image.builder()

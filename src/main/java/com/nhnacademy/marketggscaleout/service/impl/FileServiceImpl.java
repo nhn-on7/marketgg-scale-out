@@ -28,9 +28,9 @@ public class FileServiceImpl implements FileService {
         if (option.equals("local")) {
             Image imageEntity = storageServices.get(0).uploadImage(image);
             imageRepository.save(imageEntity);
+        } else {
+            storageServices.get(1).uploadImage(image);
         }
-
-        storageServices.get(1).uploadImage(image);
     }
 
 }
