@@ -1,0 +1,28 @@
+spring:
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem:~/h2/testdb;MODE=MYSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+
+cloud:
+  auth-url: https://api-identity.infrastructure.cloud.toast.com/v2.0
+  user-name: computerhermit96@gmail.com
+  password: 123!
+  tenant-id: 8a2dd42738a0427180466a56561b5eef
+  storage-url: https://api-storage.cloud.toast.com/v1/AUTH_8a2dd42738a0427180466a56561b5eef
