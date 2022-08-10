@@ -115,6 +115,11 @@ public class CloudStorageService implements StorageService {
                     .build();
     }
 
+    @Override
+    public void downloadImage(Image image) throws IOException {
+
+    }
+
     private String getUrl(String objectName) {
         return this.storageUrl + "/on7_storage/" + objectName;
     }

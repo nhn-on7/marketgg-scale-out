@@ -1,6 +1,5 @@
 package com.nhnacademy.marketggscaleout.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

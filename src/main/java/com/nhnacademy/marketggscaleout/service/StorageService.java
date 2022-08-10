@@ -9,5 +9,7 @@ public interface StorageService {
 
     Image uploadImage(MultipartFile image) throws IOException;
 
-    //TODO 6: 로컬 다운로드 기능을 구현하세요
+    // TODO 6: 로컬 다운로드 기능을 구현하세요
+    // TODO 7: cloud 다운로드 기능을 구현하세요
+    void downloadImage(final Image image) throws IOException;
 }
