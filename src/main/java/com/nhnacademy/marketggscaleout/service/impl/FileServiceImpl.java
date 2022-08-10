@@ -2,11 +2,10 @@ package com.nhnacademy.marketggscaleout.service.impl;
 
 import com.nhnacademy.marketggscaleout.entity.Image;
 import com.nhnacademy.marketggscaleout.exception.ImageNotFoundException;
+import com.nhnacademy.marketggscaleout.factory.StorageServiceFactory;
 import com.nhnacademy.marketggscaleout.repository.ImageRepository;
 import com.nhnacademy.marketggscaleout.service.FileService;
-import com.nhnacademy.marketggscaleout.service.StorageService;
 import java.io.IOException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,30 +20,18 @@ public class FileServiceImpl implements FileService {
     @Value(("${storage.option}"))
     private String option;
 
-    private final List<StorageService> storageServices;
+    private final StorageServiceFactory storageServiceFactory;
     private final ImageRepository imageRepository;
 
     public void uploadFile(final MultipartFile image) throws IOException {
-
-        if (option.equals("local")) {
-            Image imageEntity = storageServices.get(0).uploadImage(image);
-            imageRepository.save(imageEntity);
-        } else {
-            Image imageEntity = storageServices.get(1).uploadImage(image);
-            imageRepository.save(imageEntity);
-        }
+        Image imageEntity = storageServiceFactory.getService(option).uploadImage(image);
+        imageRepository.save(imageEntity);
     }
 
     @Override
     public void downloadFile(final Long id) throws IOException {
-
         Image image = imageRepository.findById(id).orElseThrow(ImageNotFoundException::new);
-
-        if (option.equals("local")) {
-            storageServices.get(0).downloadImage(image);
-        } else {
-            storageServices.get(1).downloadImage(image);
-        }
+        storageServiceFactory.getService(option).downloadImage(image);
     }
 
 }
