@@ -1,5 +1,7 @@
 package com.nhnacademy.marketggscaleout.service.impl;
 
+import com.nhnacademy.marketggscaleout.dto.request.ImageRequest;
+import com.nhnacademy.marketggscaleout.dto.response.ImageResponse;
 import com.nhnacademy.marketggscaleout.entity.Image;
 import com.nhnacademy.marketggscaleout.exception.ImageNotFoundException;
 import com.nhnacademy.marketggscaleout.factory.StorageServiceFactory;
@@ -24,14 +26,17 @@ public class FileServiceImpl implements FileService {
     private final ImageRepository imageRepository;
 
     public void uploadFile(final MultipartFile image) throws IOException {
-        Image imageEntity = storageServiceFactory.getService(option).uploadImage(image);
-        imageRepository.save(imageEntity);
+        ImageRequest request = storageServiceFactory.getService(option).uploadImage(image);
+        imageRepository.save(Image.builder()
+                                  .name(request.getName())
+                                  .imageAddress(request.getImageAddress())
+                                  .build());
     }
 
     @Override
     public void downloadFile(final Long id) throws IOException {
-        Image image = imageRepository.findById(id).orElseThrow(ImageNotFoundException::new);
-        storageServiceFactory.getService(option).downloadImage(image);
+        ImageResponse response = imageRepository.queryById(id);
+        storageServiceFactory.getService(option).downloadImage(response);
     }
 
 }
