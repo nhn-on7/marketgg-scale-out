@@ -5,9 +5,10 @@ import static org.springframework.http.HttpMethod.PUT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.marketggscaleout.dto.request.AccessRequest;
 import com.nhnacademy.marketggscaleout.dto.request.Auth;
+import com.nhnacademy.marketggscaleout.dto.request.ImageRequest;
 import com.nhnacademy.marketggscaleout.dto.request.PasswordCredentials;
 import com.nhnacademy.marketggscaleout.dto.response.AccessResponse;
-import com.nhnacademy.marketggscaleout.entity.Image;
+import com.nhnacademy.marketggscaleout.dto.response.ImageResponse;
 import com.nhnacademy.marketggscaleout.service.StorageService;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -88,7 +89,7 @@ public class CloudStorageService implements StorageService {
 
     // TODO 5: API 설명서를 보며 Object Storage에 이미지를 업로드하세요
     @Override
-    public Image uploadImage(final MultipartFile image) throws IOException {
+    public ImageRequest uploadImage(final MultipartFile image) throws IOException {
         String filename = UUID.randomUUID() + ".png";
         File objFile = new File(DIR, Objects.requireNonNull(filename));
         String url = this.getUrl(filename);
@@ -119,14 +120,14 @@ public class CloudStorageService implements StorageService {
             throw e;
         }
 
-        return Image.builder()
-                    .name(filename)
-                    .imageAddress(url)
-                    .build();
+        return ImageRequest.builder()
+                           .name(filename)
+                           .imageAddress(url)
+                           .build();
     }
 
     @Override
-    public void downloadImage(Image image) throws IOException {
+    public void downloadImage(ImageResponse image) throws IOException {
         String url = image.getImageAddress();
 
         accessResponse = objectMapper.readValue(requestToken(), AccessResponse.class);
@@ -145,8 +146,8 @@ public class CloudStorageService implements StorageService {
         File file = new File(dir, image.getName());
         try
             (
-            InputStream is = new ByteArrayInputStream(Objects.requireNonNull(response.getBody()));
-            OutputStream os = new FileOutputStream(file);
+                InputStream is = new ByteArrayInputStream(Objects.requireNonNull(response.getBody()));
+                OutputStream os = new FileOutputStream(file);
             ) {
             IOUtils.copy(is, os);
         } catch (IOException e) {

@@ -1,6 +1,7 @@
 package com.nhnacademy.marketggscaleout.service.impl;
 
-import com.nhnacademy.marketggscaleout.entity.Image;
+import com.nhnacademy.marketggscaleout.dto.request.ImageRequest;
+import com.nhnacademy.marketggscaleout.dto.response.ImageResponse;
 import com.nhnacademy.marketggscaleout.service.StorageService;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class LocalStorageService implements StorageService {
     private static final String DIR = System.getProperty("user.home");
 
     @Override
-    public Image uploadImage(final MultipartFile image) throws IOException {
+    public ImageRequest uploadImage(final MultipartFile image) throws IOException {
         if (image.isEmpty()) {
             throw new IllegalArgumentException("이미지가 없습니다");
         }
@@ -31,11 +32,14 @@ public class LocalStorageService implements StorageService {
         File dest = new File(dir, filename);
         image.transferTo(dest);
 
-        return Image.builder().imageAddress(dir).name(filename).build();
+        return ImageRequest.builder()
+                           .imageAddress(dir)
+                           .name(filename)
+                           .build();
     }
 
     @Override
-    public void downloadImage(Image image) throws IOException {
+    public void downloadImage(ImageResponse image) throws IOException {
         File localFile = new File(image.getImageAddress(), image.getName());
         File downloadFile = new File(image.getImageAddress(), UUID.randomUUID() + ".png");
         FileUtils.copyFile(localFile, downloadFile);
